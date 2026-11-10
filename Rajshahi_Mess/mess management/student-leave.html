@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Rajshahi Bhojnalay | Student Leave Portal</title>
+
+<link rel="stylesheet" href="assets/css/style.css">
+
+<style>
+
+/* Main Container */
+
+.student-portal {
+    max-width: 900px;
+    margin: 36px auto;
+    padding: 0 18px;
+}
+
+/* Hero Section */
+
+.portal-hero {
+    background: linear-gradient(135deg, #123c2c, #1f7a4d);
+    color: #fff;
+    border-radius: 20px;
+    padding: 28px;
+    margin-bottom: 22px;
+}
+
+.portal-hero h1 {
+    margin: 0 0 8px;
+}
+
+.portal-hero p {
+    margin: 6px 0;
+}
+
+/* Cards */
+
+.portal-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 20px;
+    box-shadow: 0 8px 28px rgba(16,45,32,.08);
+}
+
+.portal-card h2 {
+    margin-top: 0;
+}
+
+/* Form */
+
+.portal-form {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+}
+
+.portal-form label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 6px;
+}
+
+.portal-form input,
+.portal-form select,
+.portal-form textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #d7e2da;
+    border-radius: 9px;
+    font: inherit;
+    box-sizing: border-box;
+}
+
+.portal-form input:focus,
+.portal-form select:focus {
+    outline: none;
+    border-color: #176b43;
+    box-shadow: 0 0 0 3px rgba(23,107,67,.1);
+}
+
+.portal-form .full {
+    grid-column: 1 / -1;
+}
+
+/* Submit Button */
+
+.portal-form button {
+    background: #176b43;
+    color: white;
+    border: 0;
+    border-radius: 10px;
+    padding: 13px 18px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: .2s;
+}
+
+.portal-form button:hover {
+    background: #125534;
+}
+
+/* Notes */
+
+.portal-note {
+    font-size: 13px;
+    color: #63746a;
+    line-height: 1.6;
+}
+
+/* Navigation */
+
+.portal-top {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.portal-top a {
+    color: #176b43;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+/* Leave History */
+
+.leave-history-row {
+    border: 1px solid #e3ebe5;
+    border-radius: 12px;
+    padding: 14px;
+    margin-top: 10px;
+    display: flex;
+    gap: 12px;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.leave-history-row p {
+    margin: 4px 0;
+}
+
+.portal-status {
+    border-radius: 30px;
+    padding: 5px 10px;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.portal-status.pending {
+    background: #fff1c2;
+    color: #805b00;
+}
+
+.portal-status.approved {
+    background: #d9f5e4;
+    color: #14643b;
+}
+
+.portal-status.rejected {
+    background: #ffe0e0;
+    color: #a32d2d;
+}
+
+/* Message */
+
+.portal-message {
+    margin-top: 12px;
+    font-weight: 600;
+}
+
+/* Mobile Responsive */
+
+@media(max-width:620px) {
+
+    .portal-form {
+        grid-template-columns: 1fr;
+    }
+
+    .portal-form .full {
+        grid-column: auto;
+    }
+
+    .portal-hero {
+        padding: 22px;
+    }
+
+    .portal-card {
+        padding: 18px;
+    }
+
+    .portal-top {
+        flex-wrap: wrap;
+    }
+
+}
+
+</style>
+</head>
+
+<body>
+
+<main class="student-portal">
+
+    <!-- Navigation -->
+
+    <div class="portal-top">
+
+        <a href="index.html">
+            ← Admin Login
+        </a>
+
+        <a href="messdashboard.html">
+            Admin Dashboard →
+        </a>
+
+    </div>
+
+
+    <!-- Hero Section -->
+
+    <header class="portal-hero">
+
+        <h1>🎓 Student Leave Portal</h1>
+
+        <p>Rajshahi Bhojnalay Padampura</p>
+
+        <p>
+            Apply for a meal leave and track its approval status.
+        </p>
+
+    </header>
+
+
+    <!-- Apply Leave Form -->
+
+    <section class="portal-card">
+
+        <h2>📝 Apply for Leave</h2>
+
+        <p class="portal-note">
+            तुमचा Student ID (Add Student मध्ये दिलेला M-Number)
+            टाका. Leave Admin approve करेपर्यंत Pending राहील.
+        </p>
+
+
+        <form id="studentLeaveForm" class="portal-form">
+
+            <div>
+
+                <label for="studentId">
+                    Student ID / M-Number *
+                </label>
+
+                <input
+                    id="studentId"
+                    type="text"
+                    required
+                    maxlength="80"
+                    placeholder="Enter your Student ID"
+                >
+
+            </div>
+
+
+            <div>
+
+                <label for="leaveDate">
+                    Leave Date *
+                </label>
+
+                <input
+                    id="leaveDate"
+                    type="date"
+                    required
+                >
+
+            </div>
+
+
+            <div>
+
+                <label for="mealType">
+                    Leave Type *
+                </label>
+
+                <select id="mealType" required>
+
+                    <option value="full">
+                        Full Day
+                    </option>
+
+                    <option value="morning">
+                        Morning Only
+                    </option>
+
+                    <option value="night">
+                        Night Only
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div>
+
+                <label for="reason">
+                    Reason *
+                </label>
+
+                <input
+                    id="reason"
+                    type="text"
+                    required
+                    maxlength="200"
+                    placeholder="Reason for leave"
+                >
+
+            </div>
+
+
+            <div class="full">
+
+                <button type="submit">
+                    Submit Leave Request
+                </button>
+
+                <div
+                    id="formMessage"
+                    class="portal-message"
+                    role="status"
+                    aria-live="polite"
+                ></div>
+
+            </div>
+
+        </form>
+
+    </section>
+
+
+    <!-- Leave History -->
+
+    <section class="portal-card">
+
+        <h2>📋 My Leave Requests</h2>
+
+        <div id="myLeaveHistory">
+
+            <p class="portal-note">
+                तुमचा Student ID टाकून request history पाहू शकता.
+            </p>
+
+        </div>
+
+    </section>
+
+
+    <!-- Information -->
+
+    <p class="portal-note">
+
+        Demo Note: हा project browser LocalStorage वापरतो.
+        Student आणि Admin एकाच browser/profile मध्ये असतील
+        तरच leave request share होईल.
+
+        Real multi-user access साठी backend/database आणि
+        proper student authentication आवश्यक आहे.
+
+    </p>
+
+</main>
+
+
+<script>
+
+(function() {
+
+    'use strict';
+
+    const $ = id => document.getElementById(id);
+
+
+    // Local Storage Read
+
+    function store(key) {
+
+        try {
+
+            const data = JSON.parse(
+                localStorage.getItem(key) || '[]'
+            );
+
+            return Array.isArray(data) ? data : [];
+
+        } catch(error) {
+
+            console.error('Storage Error:', error);
+
+            return [];
+
+        }
+
+    }
+
+
+    // HTML Security
+
+    function escapeHtml(value) {
+
+        return String(value ?? '').replace(/[&<>"']/g, c => ({
+
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            '"': '&quot;',
+            "'": '&#39;'
+
+        })[c]);
+
+    }
+
+
+    // Today's Date
+
+    const today = new Date();
+
+    const todayString = [
+        today.getFullYear(),
+        String(today.getMonth() + 1).padStart(2, '0'),
+        String(today.getDate()).padStart(2, '0')
+    ].join('-');
+
+    $('leaveDate').min = todayString;
+
+    $('leaveDate').value = todayString;
+
+
+    // Display Leave History
+
+    function render() {
+
+        const id = $('studentId').value
+            .trim()
+            .toLowerCase();
+
+        if(!id) {
+
+            $('myLeaveHistory').innerHTML = `
+                <p class="portal-note">
+                    तुमचा Student ID टाकून request history पाहू शकता.
+                </p>
+            `;
+
+            return;
+
+        }
+
+
+        const students = store('students');
+
+        const student = students.find(s =>
+
+            String(s.id).trim().toLowerCase() === id
+
+        );
+
+
+        if(!student) {
+
+            $('myLeaveHistory').innerHTML = `
+                <p class="portal-note">
+                    हा Student ID सध्या Students list मध्ये सापडत नाही.
+                    Admin कडून ID तपासा.
+                </p>
+            `;
+
+            return;
+
+        }
+
+
+        const requests = store('studentLeaves')
+
+            .filter(l =>
+
+                String(l.studentId).trim().toLowerCase() === id
+
+            )
+
+            .sort((a, b) =>
+
+                String(b.appliedAt || '')
+                    .localeCompare(String(a.appliedAt || ''))
+
+            );
+
+
+        if(!requests.length) {
+
+            $('myLeaveHistory').innerHTML = `
+                <p class="portal-note">
+                    अजून Leave Request नाही.
+                </p>
+            `;
+
+            return;
+
+        }
+
+
+        $('myLeaveHistory').innerHTML = requests.map(l => {
+
+            const status = ['pending', 'approved', 'rejected']
+                .includes(l.status) ? l.status : 'approved';
+
+            const meal = ({
+                full: 'Full Day',
+                morning: 'Morning',
+                night: 'Night'
+            })[l.meal] || 'Full Day';
+
+
+            const statusText = ({
+                pending: 'Pending',
+                approved: 'Approved',
+                rejected: 'Rejected'
+            })[status];
+
+
+            return `
+
+                <div class="leave-history-row">
+
+                    <div>
+
+                        <strong>
+                            ${escapeHtml(l.date)} · ${meal}
+                        </strong>
+
+                        <p>
+                            ${escapeHtml(l.reason || 'No reason added')}
+                        </p>
+
+                    </div>
+
+                    <span class="portal-status ${status}">
+                        ${statusText}
+                    </span>
+
+                </div>
+
+            `;
+
+        }).join('');
+
+    }
+
+
+    // Student ID Change
+
+    $('studentId').addEventListener('input', render);
+
+
+    // Submit Leave Request
+
+    $('studentLeaveForm').addEventListener('submit', function(e) {
+
+        e.preventDefault();
+
+
+        const id = $('studentId').value.trim();
+
+        const date = $('leaveDate').value;
+
+        const meal = $('mealType').value;
+
+        const reason = $('reason').value.trim();
+
+        const msg = $('formMessage');
+
+
+        msg.textContent = '';
+
+
+        // Find Student
+
+        const student = store('students').find(s =>
+
+            String(s.id).trim().toLowerCase() === id.toLowerCase()
+
+        );
+
+
+        if(!student) {
+
+            msg.textContent =
+                'Student ID सापडला नाही. Admin कडे आधी student entry करून घ्या.';
+
+            msg.style.color = '#b42318';
+
+            return;
+
+        }
+
+
+        // Date Validation
+
+        if(!date || date < todayString) {
+
+            msg.textContent =
+                'कृपया आजची किंवा पुढील तारीख निवडा.';
+
+            msg.style.color = '#b42318';
+
+            return;
+
+        }
+
+
+        if(!reason) {
+
+            msg.textContent =
+                'कृपया Leave Reason लिहा.';
+
+            msg.style.color = '#b42318';
+
+            return;
+
+        }
+
+
+        // Existing Leave Check
+
+        const leaves = store('studentLeaves');
+
+        const meals = meal === 'full'
+            ? ['morning', 'night']
+            : [meal];
+
+
+        const duplicate = leaves.some(l => {
+
+            const sameStudent =
+                String(l.studentId) === String(student.id);
+
+            const sameDate = l.date === date;
+
+            const active = l.status !== 'rejected';
+
+            const existingMeals = l.meal === 'full'
+                ? ['morning', 'night']
+                : [l.meal || 'morning', 'night'].filter(
+                    (v, i, a) => a.indexOf(v) === i
+                  );
+
+            const mealConflict =
+                !l.meal || meals.some(m => existingMeals.includes(m));
+
+            return sameStudent &&
+                   sameDate &&
+                   active &&
+                   mealConflict;
+
+        });
+
+
+        if(duplicate) {
+
+            msg.textContent =
+                'या तारखेसाठी आधीच Leave Request आहे.';
+
+            msg.style.color = '#b42318';
+
+            return;
+
+        }
+
+
+        // Attendance Check
+
+        const attendance = store('attendance');
+
+        const attendanceConflict = attendance.some(a => {
+
+            return String(a.studentId) === String(student.id) &&
+                   a.date === date &&
+                   meals.includes(a.meal);
+
+        });
+
+
+        if(attendanceConflict) {
+
+            msg.textContent =
+                'या meal ची attendance आधीच mark आहे. Admin शी संपर्क करा.';
+
+            msg.style.color = '#b42318';
+
+            return;
+
+        }
+
+
+        // Save Leave Request
+
+        leaves.push({
+
+            id: 'leave-' + Date.now(),
+
+            studentId: String(student.id),
+
+            studentName: student.name,
+
+            date: date,
+
+            meal: meal,
+
+            reason: reason,
+
+            status: 'pending',
+
+            appliedAt: new Date().toISOString(),
+
+            reviewedAt: null
+
+        });
+
+
+        localStorage.setItem(
+            'studentLeaves',
+            JSON.stringify(leaves)
+        );
+
+
+        // Success Message
+
+        msg.textContent =
+            '✅ Leave request submit झाली. Admin approval ची वाट पाहा.';
+
+        msg.style.color = '#167044';
+
+
+        $('reason').value = '';
+
+        render();
+
+    });
+
+
+    // Initial Load
+
+    render();
+
+})();
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>खर्च आणि नफा | Rajshahi Bhojnalay</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+
+  <style>
+    .finance-wrap {
+      max-width: 1250px;
+      margin: 25px auto;
+      padding: 0 20px;
+    }
+
+    .finance-nav {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin: 18px 0;
+    }
+
+    .finance-nav a {
+      padding: 11px 16px;
+      background: #176b45;
+      color: #fff;
+      text-decoration: none;
+      border-radius: 9px;
+    }
+
+    .finance-title {
+      margin: 20px 0 8px;
+    }
+
+    .finance-sub {
+      color: #64748b;
+      margin-bottom: 18px;
+    }
+
+    .finance-filter {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+      margin: 14px 0;
+    }
+
+    .finance-filter select,
+    .finance-form input,
+    .finance-form select {
+      padding: 11px;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      background: #fff;
+    }
+
+    .finance-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+      gap: 14px;
+      margin: 18px 0;
+    }
+
+    .finance-card {
+      background: #fff;
+      border-radius: 13px;
+      padding: 20px;
+      box-shadow: 0 4px 18px #0f172a12;
+      border: 1px solid #e5e7eb;
+    }
+
+    .finance-card span {
+      display: block;
+      color: #64748b;
+      font-size: 14px;
+    }
+
+    .finance-card strong {
+      display: block;
+      font-size: 27px;
+      margin-top: 8px;
+      color: #172554;
+    }
+
+    .finance-card.profit strong {
+      color: #15803d;
+    }
+
+    .finance-card.loss strong {
+      color: #dc2626;
+    }
+
+    .finance-form {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+      gap: 12px;
+      align-items: end;
+    }
+
+    .finance-form label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .finance-form input,
+    .finance-form select {
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    .finance-form button {
+      width: 100%;
+      padding: 12px;
+      border: 0;
+      border-radius: 8px;
+      background: #176b45;
+      color: #fff;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .finance-table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 650px;
+    }
+
+    .finance-table th,
+    .finance-table td {
+      padding: 11px;
+      border-bottom: 1px solid #e5e7eb;
+      text-align: left;
+    }
+
+    .finance-table th {
+      background: #f1f5f9;
+    }
+
+    .finance-table-wrap {
+      overflow-x: auto;
+    }
+
+    .delete-expense {
+      background: #dc2626;
+      color: #fff;
+      border: 0;
+      border-radius: 6px;
+      padding: 7px 10px;
+      cursor: pointer;
+    }
+
+    .finance-empty {
+      color: #64748b;
+      padding: 18px;
+      text-align: center;
+    }
+
+    .finance-message {
+      margin: 12px 0 0;
+      color: #176b45;
+    }
+
+    .finance-note {
+      color: #64748b;
+      font-size: 14px;
+      margin-top: 8px;
+    }
+
+    @media (max-width: 600px) {
+      .finance-wrap {
+        padding: 0 12px;
+        margin: 16px auto;
+      }
+
+      .finance-card strong {
+        font-size: 23px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<header class="dashboard-header">
+  <div>
+    <h1>💰 खर्च आणि नफा</h1>
+    <p>RAJSHAHI BHOJNALAY PADAMPURA</p>
+  </div>
+
+  <button class="logout-btn" id="logoutBtn" type="button">
+    Logout
+  </button>
+</header>
+
+<main class="finance-wrap">
+
+  <nav class="finance-nav">
+    <a href="messdashboard.html">← Dashboard वर जा</a>
+    <a href="mealreport.html">Student Report</a>
+  </nav>
+
+  <h2 class="finance-title">📊 Mess आर्थिक अहवाल</h2>
+
+  <p class="finance-sub">
+    विद्यार्थ्यांकडून जमा झालेली फी आणि मेसचा खर्च नोंदवा.
+    नफा किंवा तोटा आपोआप मोजला जाईल.
+  </p>
+
+  <!-- Month Year Filter -->
+
+  <div class="finance-filter">
+
+    <label for="financeMonth">महिना:</label>
+    <select id="financeMonth"></select>
+
+    <label for="financeYear">वर्ष:</label>
+    <select id="financeYear"></select>
+
+  </div>
+
+  <!-- Financial Summary -->
+
+  <section class="finance-cards">
+
+    <article class="finance-card">
+      <span>💵 एकूण जमा रक्कम</span>
+      <strong id="totalIncome">₹0</strong>
+    </article>
+
+    <article class="finance-card">
+      <span>🧾 एकूण खर्च</span>
+      <strong id="totalExpense">₹0</strong>
+    </article>
+
+    <article class="finance-card profit" id="profitCard">
+      <span id="profitLabel">📈 नफा</span>
+      <strong id="netProfit">₹0</strong>
+    </article>
+
+  </section>
+
+  <!-- Add Expense -->
+
+  <section class="content-section">
+
+    <h2>➕ नवीन खर्च नोंदवा</h2>
+
+    <form id="expenseForm" class="finance-form">
+
+      <div>
+        <label for="expenseTitle">खर्चाचे नाव</label>
+        <input
+          id="expenseTitle"
+          type="text"
+          maxlength="100"
+          placeholder="उदा. भाजीपाला, किराणा"
+          required
+        >
+      </div>
+
+      <div>
+        <label for="expenseCategory">प्रकार</label>
+
+        <select id="expenseCategory">
+          <option>किराणा</option>
+          <option>भाजीपाला</option>
+          <option>गॅस</option>
+          <option>वीज बिल</option>
+          <option>पाणी</option>
+          <option>पगार</option>
+          <option>दुरुस्ती</option>
+          <option>इतर</option>
+        </select>
+      </div>
+
+      <div>
+        <label for="expenseAmount">रक्कम (₹)</label>
+        <input
+          id="expenseAmount"
+          type="number"
+          min="0.01"
+          step="0.01"
+          placeholder="रक्कम"
+          required
+        >
+      </div>
+
+      <div>
+        <label for="expenseDate">तारीख</label>
+        <input
+          id="expenseDate"
+          type="date"
+          required
+        >
+      </div>
+
+      <div>
+        <button type="submit">
+          💾 खर्च सेव्ह करा
+        </button>
+      </div>
+
+    </form>
+
+    <p
+      id="expenseMessage"
+      class="finance-message"
+      role="status"
+      aria-live="polite"
+    ></p>
+
+  </section>
+
+  <!-- Expense List -->
+
+  <section class="content-section">
+
+    <h2>📋 खर्चाची यादी</h2>
+
+    <div class="finance-table-wrap">
+
+      <table class="finance-table">
+
+        <thead>
+          <tr>
+            <th>तारीख</th>
+            <th>खर्चाचे नाव</th>
+            <th>प्रकार</th>
+            <th>रक्कम</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+
+        <tbody id="expenseRows"></tbody>
+
+      </table>
+
+    </div>
+
+    <p id="expenseEmpty" class="finance-empty" hidden>
+      या महिन्यात खर्च नोंदवलेला नाही.
+    </p>
+
+  </section>
+
+  <!-- Calculation Information -->
+
+  <section class="content-section">
+
+    <h2>ℹ️ नफा कसा मोजला जातो?</h2>
+
+    <p>
+      नफा / तोटा = निवडलेल्या महिन्यातील विद्यार्थ्यांकडून
+      प्रत्यक्ष जमा झालेली रक्कम − नोंदवलेला एकूण खर्च.
+    </p>
+
+    <p class="finance-note">
+      टीप: Payments आणि खर्चाची माहिती या browser मधील
+      Local Storage मध्ये सेव्ह होते. Browser data clear
+      केल्यास माहिती नष्ट होऊ शकते. नियमित Backup घ्या.
+    </p>
+
+  </section>
+
+</main>
+
+<script>
+'use strict';
+
+// Admin Login Check
+
+if (localStorage.getItem('adminLoggedIn') !== 'true') {
+  window.location.href = 'index.html';
+}
+
+const $ = (id) => document.getElementById(id);
+
+const MONTHS = [
+  'January', 'February', 'March', 'April',
+  'May', 'June', 'July', 'August',
+  'September', 'October', 'November', 'December'
+];
+
+// Read Local Storage Safely
+
+function readStorage(key, fallback = []) {
+  try {
+    const value = JSON.parse(localStorage.getItem(key) || 'null');
+
+    return Array.isArray(value) ? value : fallback;
+
+  } catch (error) {
+    console.error(`Storage read error (${key}):`, error);
+    return fallback;
+  }
+}
+
+let expenses = readStorage('messExpenses');
+
+// Local Date Function
+
+function getLocalDateString(date = new Date()) {
+
+  const year = date.getFullYear();
+
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+
+  const day = String(date.getDate()).padStart(2, '0');
+
+  return `${year}-${month}-${day}`;
+}
+
+// Save Expenses
+
+function saveExpenses() {
+  localStorage.setItem('messExpenses', JSON.stringify(expenses));
+}
+
+// Currency Format
+
+function money(amount) {
+
+  return '₹' + Number(amount || 0).toLocaleString('en-IN', {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 2
+  });
+
+}
+
+// HTML Security
+
+function escapeHTML(value) {
+
+  return String(value ?? '').replace(/[&<>"']/g, (char) => ({
+
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#39;'
+
+  })[char]);
+
+}
+
+// Setup Month and Year
+
+function setupMonthAndYear() {
+
+  const today = new Date();
+
+  MONTHS.forEach((month, index) => {
+
+    $('financeMonth').add(
+      new Option(month, String(index))
+    );
+
+  });
+
+  for (
+    let year = today.getFullYear() - 3;
+    year <= today.getFullYear() + 1;
+    year++
+  ) {
+
+    $('financeYear').add(
+      new Option(String(year), String(year))
+    );
+
+  }
+
+  $('financeMonth').value = String(today.getMonth());
+
+  $('financeYear').value = String(today.getFullYear());
+
+  $('expenseDate').value = getLocalDateString(today);
+
+}
+
+// Selected Month and Year
+
+function getSelectedPeriod() {
+
+  return {
+
+    month: Number($('financeMonth').value),
+
+    year: Number($('financeYear').value)
+
+  };
+
+}
+
+// Calculate Monthly Payments
+
+function getMonthlyPayments(month, year) {
+
+  const payments = readStorage('payments');
+
+  return payments.filter((payment) => {
+
+    return Number(payment.month) === month &&
+           Number(payment.year) === year;
+
+  });
+
+}
+
+// Render Finance Report
+
+function renderFinance() {
+
+  const { month, year } = getSelectedPeriod();
+
+  const payments = getMonthlyPayments(month, year);
+
+  const income = payments.reduce((total, payment) => {
+
+    return total + Number(payment.amount || 0);
+
+  }, 0);
+
+  const monthlyExpenses = expenses
+
+    .filter((expense) => {
+
+      if (!expense.date) return false;
+
+      const date = new Date(`${expense.date}T00:00:00`);
+
+      return !Number.isNaN(date.getTime()) &&
+             date.getMonth() === month &&
+             date.getFullYear() === year;
+
+    })
+
+    .sort((a, b) => b.date.localeCompare(a.date));
+
+  const totalExpense = monthlyExpenses.reduce((total, expense) => {
+
+    return total + Number(expense.amount || 0);
+
+  }, 0);
+
+  const netProfit = income - totalExpense;
+
+  // Update Summary Cards
+
+  $('totalIncome').textContent = money(income);
+
+  $('totalExpense').textContent = money(totalExpense);
+
+  $('netProfit').textContent = money(Math.abs(netProfit));
+
+  $('profitLabel').textContent =
+    netProfit >= 0 ? '📈 नफा' : '📉 तोटा';
+
+  $('profitCard').classList.toggle('profit', netProfit >= 0);
+
+  $('profitCard').classList.toggle('loss', netProfit < 0);
+
+  // Display Expense Table
+
+  $('expenseRows').innerHTML = monthlyExpenses.map((expense) => {
+
+    return `
+
+      <tr>
+
+        <td>
+          ${new Date(
+            `${expense.date}T00:00:00`
+          ).toLocaleDateString('en-IN')}
+        </td>
+
+        <td>${escapeHTML(expense.title)}</td>
+
+        <td>${escapeHTML(expense.category)}</td>
+
+        <td>${money(expense.amount)}</td>
+
+        <td>
+
+          <button
+            class="delete-expense"
+            type="button"
+            data-expense-id="${escapeHTML(expense.id)}"
+          >
+            Delete
+          </button>
+
+        </td>
+
+      </tr>
+
+    `;
+
+  }).join('');
+
+  $('expenseEmpty').hidden = monthlyExpenses.length > 0;
+
+}
+
+// Add New Expense
+
+$('expenseForm').addEventListener('submit', (event) => {
+
+  event.preventDefault();
+
+  const title = $('expenseTitle').value.trim();
+
+  const category = $('expenseCategory').value;
+
+  const amount = Number($('expenseAmount').value);
+
+  const date = $('expenseDate').value;
+
+  if (
+    !title ||
+    !date ||
+    !Number.isFinite(amount) ||
+    amount <= 0
+  ) {
+
+    $('expenseMessage').textContent =
+      'कृपया सर्व माहिती योग्य भरा.';
+
+    return;
+
+  }
+
+  expenses.push({
+
+    id: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+
+    title: title,
+
+    category: category,
+
+    amount: amount,
+
+    date: date,
+
+    createdAt: new Date().toISOString()
+
+  });
+
+  saveExpenses();
+
+  $('expenseMessage').textContent =
+    'खर्च यशस्वीरीत्या सेव्ह झाला.';
+
+  event.target.reset();
+
+  $('expenseDate').value = getLocalDateString();
+
+  renderFinance();
+
+});
+
+// Delete Expense
+
+$('expenseRows').addEventListener('click', (event) => {
+
+  const button = event.target.closest('[data-expense-id]');
+
+  if (!button) return;
+
+  const expenseId = button.dataset.expenseId;
+
+  if (!window.confirm('हा खर्च delete करायचा आहे का?')) {
+    return;
+  }
+
+  expenses = expenses.filter((expense) => {
+
+    return expense.id !== expenseId;
+
+  });
+
+  saveExpenses();
+
+  $('expenseMessage').textContent =
+    'खर्चाची नोंद delete केली आहे.';
+
+  renderFinance();
+
+});
+
+// Logout Function
+
+$('logoutBtn').addEventListener('click', () => {
+
+  localStorage.removeItem('adminLoggedIn');
+
+  window.location.href = 'index.html';
+
+});
+
+// Filter Events
+
+$('financeMonth').addEventListener('change', renderFinance);
+
+$('financeYear').addEventListener('change', renderFinance);
+
+// Initialize Page
+
+setupMonthAndYear();
+
+renderFinance();
+
+</script>
+
+</body>
+</html>
